@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="BMI.css">
+  <title>BMI</title>
+</head>
+<div id="BMI" class="container">
+  <div class="bmi-info">
+    <div class="info">
+      <div class="t-l">
+        <div class="row">
+          性別：<input type="radio" name="sex" v-model="selected" value="male" /> 男
+          <input type="radio" name="sex" v-model="selected" value="female" /> 女
+        </div>
+        <div class="row">身高：<input :class="{ empty: isActive }" type=" text" placeholder="請輸入身高(cm)" id="hei"
+            v-model="hei"></div>
+        <div class="row">體重：<input :class="{ empty: isActive }" type="text" placeholder="請輸入體重(kg)" id="wei"
+            v-model="wei"></div>
+        <button class="btn-submit" @click="bmiCount">點我計算BMI</button>
+      </div>
+    </div>
+    <h1>BMI： <span class="red-line"> {{bmiNam}}</span></h1>
+    <h3>( ﾟДﾟ)σ -< {{talk}} </h3>
+  </div>
+  <div class="bmi-info">
+    <div class="info">
+      <div class="t-l">
+        <div class="row">
+          性別：<input type="radio" name="sex" v-model="selected2" value="male" /> 男
+          <input type="radio" name="sex" v-model="selected2" value="female" /> 女
+        </div>
+        <div class="row">身高：<input :class="{ empty: isActive2 }" type=" text" placeholder="請輸入身高(cm)" id="hei"
+            v-model="hei2"></div>
+        <div class="row">體重：<input :class="{ empty: isActive2 }" type="text" placeholder="請輸入體重(kg)" id="wei"
+            v-model="wei2"></div>
+      </div>
+    </div>
+    <h1>BMI： <span class="red-line"> {{bmiCountC}}</span></h1>
+    <h3>( ﾟДﾟ)σ -< {{talkC}} </h3>
+  </div>
+</div>
+
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    // let hei = document.getElementById("hei").value
+    // console.log('hei', hei)
+    // let wei = document.getElementById("wei").value
+    // console.log('wei', wei)
+
+
+    let BMI = new Vue({
+      el: '#BMI',
+      data: {
+        talk: '性別還沒選擇，不給你建議哦',
+        bmiNam: '',
+        selected: null,
+        isActive: false,
+        hei: null,
+        wei: null,
+
+        talk2: '性別還沒選擇，不給你建議哦',
+        bmiNam2: '',
+        selected2: null,
+        isActive2: false,
+        hei2: null,
+        wei2: null,
+      },
+      created() {
+      },
+
+      mounted: function () {
+
+      },
+
+      methods: {
+        bmiCount() {
+          this.isActive = false
+          let bmiCount = this.wei / ((this.hei / 100) ^ 2)
+          console.log('bmiCount', bmiCount)
+
+          this.bmiNam = bmiCount.toFixed(2)
+
+
+
+          if (this.selected == "male") {
+            // 男
+            if (bmiCount < 20) { this.talk = "你太瘦啦! 要多吃點!" } else {
+              if (25 < bmiCount) { this.talk = "好像有點吃太多囉，過胖了" } else { this.talk = "適中~請繼續維持" }
+            }
+          } else {
+            // 女
+            if (bmiCount < 18) { this.talk = "你太瘦啦! 要多吃點!" } else {
+              if (22 < bmiCount) { this.talk = "好像有點吃太多囉，過胖了" } else { this.talk = "適中~請繼續維持" }
+            }
+          }
+
+          if (!this.hei || !this.wei) {
+            this.talk = "請輸入身高和體重"
+            this.isActive = true
+            this.bmiNam =''
+          }
+
+          if (!this.selected) {
+            this.talk = "性別還沒選擇，不給你建議哦"
+          }
+        }
+
+      },
+      computed: {
+        bmiCountC() {
+          if (!this.hei2 || !this.wei2) {
+            this.isActive2 = true
+            return this.bmiNam2 = ''
+          }
+
+          this.isActive2 = false
+          let bmiCount = this.wei2 / ((this.hei2 / 100) ^ 2)
+          console.log('bmiCount', bmiCount)
+          this.bmiNam2 = bmiCount.toFixed(2)
+          return this.bmiNam2
+        },
+
+        talkC() {
+          if (!this.selected2) {
+            return this.talk2 = "性別還沒選擇，不給你建議哦"
+          }
+
+          if (this.selected2 == "male" && this.bmiNam2 > 0) {
+            console.log('現在選男的')
+            if (this.bmiNam2 < 20) { return this.talk2 = "你太瘦啦! 要多吃點!" } else {
+              if (25 < this.bmiNam2) { return this.talk2 = "好像有點吃太多囉，過胖了" } else { return this.talk2 = "適中~請繼續維持" }
+            }
+          } else { if (!this.bmiNam2) { return this.talk2 = "請輸入身高和體重" } }
+
+          if (this.selected2 == "female" && this.bmiNam2 > 0) {
+            console.log('現在選女的')
+            if (this.bmiNam2 < 18) { return this.talk2 = "你太瘦啦! 要多吃點!" } else {
+              if (22 < this.bmiNam2) { return this.talk2 = "好像有點吃太多囉，過胖了" } else { return this.talk2 = "適中~請繼續維持" }
+            }
+
+          }
+        }
+
+      },
+      watch: {
+
+      }
+
+    });
+  </script>
+</body>
+
+</html>
